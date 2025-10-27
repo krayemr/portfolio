@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rami Krayem - Senior Product Manager</title>
+    <title>Rami Krayem - Senior Product Manager Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -15,11 +16,12 @@
             --primary: #1a365d;
             --secondary: #2d3748;
             --accent: #17a085;
+            --accent-light: #48bb78;
+            --warning: #ed8936;
             --light-bg: #f7fafc;
             --text-dark: #1a202c;
             --text-light: #718096;
             --border: #e2e8f0;
-            --spacing: 1rem;
         }
 
         body {
@@ -29,7 +31,7 @@
             background: #fff;
         }
 
-        /* HEADER & NAVIGATION */
+        /* HEADER */
         header {
             background: var(--primary);
             color: white;
@@ -52,19 +54,38 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            cursor: pointer;
         }
 
-        nav a {
+        nav a, nav button {
+            background: none;
+            border: none;
             color: white;
             text-decoration: none;
             margin-left: 2rem;
             font-size: 0.95rem;
             transition: opacity 0.3s;
+            cursor: pointer;
         }
 
-        nav a:hover {
+        nav a:hover, nav button:hover {
             opacity: 0.8;
+        }
+
+        /* PAGE VISIBILITY */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
         }
 
         /* HERO SECTION */
@@ -85,6 +106,88 @@
             margin-bottom: 1rem;
             line-height: 1.2;
             font-weight: 700;
+        }
+
+        /* ABOUT PAGE STYLES */
+        .about-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            margin-bottom: 3rem;
+        }
+
+        .about-text h3 {
+            margin-bottom: 1.5rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .differentiators {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .differentiators h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .differentiators ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .differentiators li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .differentiators li:last-child {
+            border-bottom: none;
+        }
+
+        .credentials {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .credentials h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .credential-item {
+            margin-bottom: 1rem;
+        }
+
+        .credential-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .credential-value {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .about-section {
+                grid-template-columns: 1fr;
+            }
         }
 
         .hero-subtitle {
@@ -114,6 +217,7 @@
             border: none;
             cursor: pointer;
             font-size: 1rem;
+            margin: 0.5rem;
         }
 
         .cta-button:hover {
@@ -121,7 +225,7 @@
             box-shadow: 0 8px 16px rgba(23, 160, 133, 0.3);
         }
 
-        /* HIGHLIGHTS SECTION */
+        /* HIGHLIGHTS */
         .highlights {
             background: var(--light-bg);
             padding: 4rem 2rem;
@@ -156,13 +260,6 @@
             font-weight: 500;
         }
 
-        /* SECTION CONTAINER */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-        }
-
         h2 {
             font-size: 2rem;
             margin-bottom: 3rem;
@@ -175,11 +272,7 @@
             color: var(--primary);
         }
 
-        /* CASE STUDIES SECTION */
-        .case-studies {
-            background: white;
-        }
-
+        /* CASE STUDIES GRID */
         .case-study-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -256,63 +349,155 @@
             color: var(--accent);
         }
 
-        /* ABOUT SECTION */
-        .about {
-            background: var(--light-bg);
+        /* SECTION LABEL */
+        .section-label {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
         }
 
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-            max-width: 1200px;
+        /* DETAILED CASE STUDY PAGE */
+        .case-study-detail {
+            background: white;
+        }
+
+        .case-study-hero {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .case-study-hero-content {
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        .about-text h3 {
+        .case-study-hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .case-study-hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
             margin-bottom: 1.5rem;
         }
 
-        .about-text p {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: var(--text-light);
-            line-height: 1.8;
+        .starl-section {
+            margin-bottom: 3rem;
         }
 
-        .skills-section {
-            margin-top: 2rem;
-        }
-
-        .skill-category {
-            margin-bottom: 1.5rem;
-        }
-
-        .skill-category-title {
-            font-weight: 600;
+        .starl-section h3 {
             color: var(--primary);
-            margin-bottom: 0.75rem;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-
-        .skill-tags {
+            margin-bottom: 1rem;
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
             gap: 0.5rem;
         }
 
-        .skill-tag {
-            background: white;
-            border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
+        .starl-label {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.25rem 0.75rem;
             border-radius: 2rem;
-            font-size: 0.85rem;
-            color: var(--text-dark);
+            font-size: 0.75rem;
+            font-weight: 600;
         }
 
-        /* CONTACT SECTION */
+        .starl-content {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .starl-content p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .starl-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* METRICS DASHBOARD */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            border-top: 4px solid var(--accent);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .metric-card h4 {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            position: relative;
+            height: 400px;
+        }
+
+        .chart-container h4 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .chart-canvas {
+            position: relative;
+            height: 300px;
+        }
+
+        /* BACK BUTTON */
+        .back-button {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            transition: opacity 0.3s;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        /* CONTACT */
         .contact {
             background: var(--primary);
             color: white;
@@ -357,16 +542,12 @@
                 font-size: 2rem;
             }
 
-            .hero-subtitle {
-                font-size: 1rem;
+            .case-study-hero h1 {
+                font-size: 1.75rem;
             }
 
             nav {
                 display: none;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
             }
 
             .highlights-grid {
@@ -380,22 +561,32 @@
             .contact-links {
                 gap: 1rem;
             }
-        }
 
-        /* SECTION SPACING */
-        .section-label {
-            font-size: 0.85rem;
-            color: var(--accent);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
+            .chart-container {
+                height: 300px;
+            }
+
+            .chart-canvas {
+                height: 200px;
+            }
         }
 
         .divider {
             height: 1px;
             background: var(--border);
+            margin: 3rem 0;
+        }
+
+        .key-insight {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 0.25rem;
             margin: 2rem 0;
+        }
+
+        .key-insight strong {
+            color: var(--primary);
         }
     </style>
 </head>
@@ -404,186 +595,862 @@
 <!-- HEADER -->
 <header>
     <div class="header-content">
-        <div class="logo">RK</div>
+        <div class="logo" onclick="showPage('home')">RK</div>
         <nav>
-            <a href="#home">Home</a>
-            <a href="#case-studies">Work</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+            <button onclick="showPage('home')">Home</button>
+            <button onclick="showPage('about')">About</button>
+            <button onclick="showPage('dashboard')">Dashboard</button>
+            <button onclick="showPage('case-studies')">Case Studies</button>
+            <button onclick="showPage('contact')">Contact</button>
         </nav>
     </div>
 </header>
 
-<!-- HERO -->
-<section class="hero" id="home">
-    <div class="hero-content">
-        <h1>Senior Product Manager</h1>
-        <p class="hero-subtitle">Enterprise SaaS & E-Commerce</p>
-        <p class="hero-description">
-            11+ years driving digital transformation at scale. Proven expertise optimizing high-traffic platforms, managing distributed global teams, and translating complex business needs into scalable product strategies.
-        </p>
-        <a href="#case-studies" class="cta-button">View Case Studies</a>
-    </div>
-</section>
+<!-- HOME PAGE -->
+<div class="page active" id="home">
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Senior Product Manager</h1>
+            <p class="hero-subtitle">Enterprise SaaS & E-Commerce</p>
+            <p class="hero-description">
+                12 years driving digital transformation at scale, including ~300%+ revenue growth across Nike Digital platforms. Proven expertise optimizing high-traffic platforms, managing distributed global teams, and translating complex business needs into scalable product strategies.
+            </p>
+            <button class="cta-button" onclick="showPage('case-studies')">View Case Studies</button>
+            <button class="cta-button" onclick="showPage('dashboard')">View Metrics</button>
+        </div>
+    </section>
 
-<!-- HIGHLIGHTS -->
-<section class="highlights">
-    <div class="highlights-grid">
-        <div class="highlight-card">
-            <div class="highlight-metric">387%</div>
-            <div class="highlight-label">Revenue Growth Through Digital Channels</div>
-        </div>
-        <div class="highlight-card">
-            <div class="highlight-metric">108%</div>
-            <div class="highlight-label">Revenue Growth Over 4 Years (Nike Digital)</div>
-        </div>
-        <div class="highlight-card">
-            <div class="highlight-metric">11+</div>
-            <div class="highlight-label">Years Product Management Experience</div>
-        </div>
-        <div class="highlight-card">
-            <div class="highlight-metric">3</div>
-            <div class="highlight-label">Global Regions Managed (North America, China, Europe)</div>
-        </div>
-    </div>
-</section>
-
-<!-- CASE STUDIES -->
-<section class="case-studies" id="case-studies">
-    <div class="container">
-        <div class="section-label">Featured Work</div>
-        <h2>Case Studies</h2>
-        
-        <div class="case-study-grid">
-            <!-- Case Study 1 -->
-            <div class="case-study-card">
-                <div class="case-study-header">
-                    <h3>Nike.com Product Detail Page</h3>
-                    <span class="case-study-tag">E-Commerce Optimization</span>
-                </div>
-                <div class="case-study-body">
-                    <p><strong>Challenge:</strong> Drive revenue growth through e-commerce platform optimization while managing global complexity and regional requirements.</p>
-                    <p><strong>Approach:</strong> Led two major platform and UX refactors, managed cloud migration, and coordinated with geographic partners across legal/regulatory constraints.</p>
-                    <div class="case-study-outcome">
-                        <div class="outcome-label">Result</div>
-                        <div class="outcome-value">108% Revenue Growth (4 years)</div>
-                    </div>
-                </div>
+    <!-- HIGHLIGHTS -->
+    <section class="highlights">
+        <div class="highlights-grid">
+            <div class="highlight-card">
+                <div class="highlight-metric">300%+</div>
+                <div class="highlight-label">Digital Platform Growth (Nike.com & Nike App)</div>
             </div>
-
-            <!-- Case Study 2 -->
-            <div class="case-study-card">
-                <div class="case-study-header">
-                    <h3>Nike By You 3D Customization</h3>
-                    <span class="case-study-tag">Technical Problem-Solving</span>
-                </div>
-                <div class="case-study-body">
-                    <p><strong>Challenge:</strong> Scale 3D rendering infrastructure to handle global product launches and high-traffic events.</p>
-                    <p><strong>Approach:</strong> Identified bottleneck through data analysis (400 RPS limit). Re-architected rendering pipeline with backend team.</p>
-                    <div class="case-study-outcome">
-                        <div class="outcome-label">Result</div>
-                        <div class="outcome-value">40-50% of Products Now Live</div>
-                    </div>
-                </div>
+            <div class="highlight-card">
+                <div class="highlight-metric">108%</div>
+                <div class="highlight-label">Revenue Growth Over 4 Years (Nike Digital)</div>
             </div>
-
-            <!-- Case Study 3 -->
-            <div class="case-study-card">
-                <div class="case-study-header">
-                    <h3>Finance Transformation (Anaplan)</h3>
-                    <span class="case-study-tag">Enterprise Leadership</span>
-                </div>
-                <div class="case-study-body">
-                    <p><strong>Challenge:</strong> Unify financial planning across 3+ regions with different requirements and constraints.</p>
-                    <p><strong>Approach:</strong> Partnered with Finance, Engineering, Data teams to translate complex requirements into scalable product capabilities.</p>
-                    <div class="case-study-outcome">
-                        <div class="outcome-label">Impact</div>
-                        <div class="outcome-value">Global Platform Delivered</div>
-                    </div>
-                </div>
+            <div class="highlight-card">
+                <div class="highlight-metric">12</div>
+                <div class="highlight-label">Years Product Management Experience</div>
+            </div>
+            <div class="highlight-card">
+                <div class="highlight-metric">3</div>
+                <div class="highlight-label">Global Regions Managed</div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- ABOUT -->
-<section class="about" id="about">
-    <div class="container">
-        <div class="section-label">About Me</div>
-        <h2>Background & Philosophy</h2>
-        
-        <div class="about-content">
-            <div class="about-text">
-                <h3>My PM Journey</h3>
-                <p>I started my career understanding that great products aren't built in a vacuum. They're built by listening deeply, asking the right questions, and executing with discipline.</p>
-                <p>Over 11+ years, I've scaled products from millions to billions in commerce volume, managed distributed teams across 3+ continents, and learned that the best PM decisions come from data, customer insight, and cross-functional trust.</p>
-                <p><strong>My approach:</strong> Start with customer problems, not solutions. Build data-driven roadmaps. Execute with rigor. Communicate with clarity.</p>
-            </div>
-            <div class="skills-section">
-                <div class="skill-category">
-                    <div class="skill-category-title">Product Management</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Strategy & Vision</span>
-                        <span class="skill-tag">Agile/SAFe</span>
-                        <span class="skill-tag">Roadmap Planning</span>
-                        <span class="skill-tag">OKRs & KPIs</span>
+    <!-- FEATURED WORK -->
+    <section class="case-studies">
+        <div class="container">
+            <div class="section-label">Featured Work</div>
+            <h2>Case Studies</h2>
+            
+            <div class="case-study-grid">
+                <div class="case-study-card" onclick="showPage('cs1')">
+                    <div class="case-study-header">
+                        <h3>Nike.com Product Detail Page</h3>
+                        <span class="case-study-tag">E-Commerce Optimization</span>
+                    </div>
+                    <div class="case-study-body">
+                        <p><strong>Challenge:</strong> Drive revenue growth through platform optimization while managing global complexity.</p>
+                        <p><strong>Approach:</strong> Led two major platform and UX refactors with cloud migration.</p>
+                        <div class="case-study-outcome">
+                            <div class="outcome-label">Result</div>
+                            <div class="outcome-value">108% Revenue Growth</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="skill-category">
-                    <div class="skill-category-title">Domain Expertise</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Enterprise SaaS</span>
-                        <span class="skill-tag">E-Commerce</span>
-                        <span class="skill-tag">Digital Platforms</span>
-                        <span class="skill-tag">Global Scale</span>
+                <div class="case-study-card" onclick="showPage('cs2')">
+                    <div class="case-study-header">
+                        <h3>Nike By You 3D Customization</h3>
+                        <span class="case-study-tag">Technical Problem-Solving</span>
+                    </div>
+                    <div class="case-study-body">
+                        <p><strong>Challenge:</strong> Scale 3D rendering infrastructure for global product launches.</p>
+                        <p><strong>Approach:</strong> Identified bottleneck through data analysis, re-architected rendering pipeline.</p>
+                        <div class="case-study-outcome">
+                            <div class="outcome-label">Result</div>
+                            <div class="outcome-value">40-50% of Products Live</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="skill-category">
-                    <div class="skill-category-title">Analytics & Tools</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">A/B Testing</span>
-                        <span class="skill-tag">Google Analytics</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">Optimizely</span>
-                        <span class="skill-tag">JIRA/Confluence</span>
+                <div class="case-study-card" onclick="showPage('cs3')">
+                    <div class="case-study-header">
+                        <h3>Finance Transformation (Anaplan)</h3>
+                        <span class="case-study-tag">Enterprise Leadership</span>
                     </div>
-                </div>
-
-                <div class="skill-category">
-                    <div class="skill-category-title">Emerging Tech</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">AI/Generative AI</span>
-                        <span class="skill-tag">ML Integration</span>
-                        <span class="skill-tag">Prompt Engineering</span>
+                    <div class="case-study-body">
+                        <p><strong>Challenge:</strong> Unify financial planning across 3+ regions with different requirements.</p>
+                        <p><strong>Approach:</strong> Partnered with Finance, Engineering, Data teams across geographies.</p>
+                        <div class="case-study-outcome">
+                            <div class="outcome-label">Impact</div>
+                            <div class="outcome-value">Global Platform Deployed</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 
-<!-- CONTACT -->
-<section class="contact" id="contact">
-    <div class="container">
-        <div class="section-label" style="color: rgba(255,255,255,0.7);">Get In Touch</div>
-        <h2>Let's Connect</h2>
-        <p style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.05rem; opacity: 0.95;">
-            I'm interested in Senior PM roles at innovative companies building enterprise solutions at scale. Let's talk about your challenges and how I can help.
-        </p>
-        <div class="contact-links">
-            <a href="mailto:krayemr@gmail.com" class="contact-link">📧 Email</a>
-            <a href="https://linkedin.com/in/ramikrayem" class="contact-link">💼 LinkedIn</a>
-            <a href="#" class="contact-link">📄 Resume</a>
+<!-- ABOUT PAGE -->
+<div class="page" id="about">
+    <section class="case-study-detail">
+        <div class="container">
+            <a class="back-button" onclick="showPage('home')">← Back to Home</a>
+            
+            <div class="section-label">Who I Am</div>
+            <h2>About Me</h2>
+
+            <div class="about-section">
+                <div class="about-text">
+                    <h3>My Approach to Product Management</h3>
+                    <p>I'm a strategic Senior Product Manager with 12 years driving measurable business outcomes across enterprise SaaS, AI-powered products, and large-scale digital commerce platforms. I believe the best products come from understanding customer problems deeply, translating them into clear strategies, and executing with discipline across diverse teams.</p>
+                    
+                    <p>My career has been built on a simple principle: <strong>translate business vision into delivered customer experiences at scale.</strong> At Nike, I managed core product experiences (Nike.com Product Detail Page, Nike By You 3D customization, and Member Home personalization) as part of Nike's broader e-commerce platforms. These initiatives contributed to the ~300%+ digital platform revenue growth over my tenure. Rather than optimizing single experiences in isolation, I focused on a cohesive product strategy: improving conversion through PDP optimization, driving retention through personalized member experiences, and creating premium engagement through 3D customization. My work showed that the best platform outcomes come from strategic alignment across multiple product levers.</p>
+
+                    <p>I combine technical depth—having worked closely with backend engineers, ML teams, and infrastructure specialists on complex problems—with strategic business acumen. I navigate complex stakeholder landscapes across global organizations, lead multi-team product initiatives with clarity, and consistently deliver on ambitious timelines.</p>
+
+                    <h3 style="margin-top: 2rem;">Why This Matters</h3>
+                    <p>I'm drawn to roles where product management directly shapes business outcomes. I thrive in environments where I can partner with Sales to understand customer needs, work with Engineering to solve technical challenges, and align with leadership on strategic priorities. My goal is always the same: build products that customers love and that drive measurable business value.</p>
+                </div>
+
+                <div class="credentials">
+                    <h4>🎓 Education & Certifications</h4>
+                    
+                    <div class="credential-item">
+                        <div class="credential-label">Education</div>
+                        <div class="credential-value">B.S. Communications, Oregon State University</div>
+                    </div>
+
+                    <div class="credential-item">
+                        <div class="credential-label">Scrum & Agile</div>
+                        <div class="credential-value">Certified Scrum Product Owner (Scrum Alliance)</div>
+                    </div>
+
+                    <div class="credential-item">
+                        <div class="credential-label">Enterprise Platforms</div>
+                        <div class="credential-value">Anaplan Level 1 Certification</div>
+                    </div>
+
+                    <div class="credential-item">
+                        <div class="credential-label">Project Management</div>
+                        <div class="credential-value">Project Management Certification (Portland State University)</div>
+                    </div>
+
+                    <div class="credential-item">
+                        <div class="credential-label">Analytics</div>
+                        <div class="credential-value">Webtrends Certified Engineer</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="differentiators">
+                <h4>💪 My Differentiators</h4>
+                <ul>
+                    <li><strong>Technical Depth & Business Acumen:</strong> I understand cloud platforms, API integration, and data architecture—and I know how to translate technical constraints into business strategy.</li>
+                    <li><strong>Enterprise Complexity Navigation:</strong> I excel at managing stakeholder dynamics across global organizations, aligning diverse teams, and delivering complex products despite constraints.</li>
+                    <li><strong>Data-Driven Mindset:</strong> I prioritize metrics and evidence over opinions. From A/B testing to forecasting analysis, I let data guide product decisions.</li>
+                    <li><strong>Customer-Centric Leadership:</strong> I ensure products not only meet technical requirements but drive tangible business outcomes and user satisfaction.</li>
+                    <li><strong>Execution Excellence:</strong> I deliver on ambitious timelines by combining strategic planning with disciplined execution and proactive risk management.</li>
+                    <li><strong>Cross-Functional Influence:</strong> I build trust with Engineering, Design, Sales, and leadership through clear communication and collaborative problem-solving.</li>
+                </ul>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
+
+<!-- DASHBOARD PAGE -->
+<div class="page" id="dashboard">
+    <section class="case-study-detail">
+        <div class="container">
+            <a class="back-button" onclick="showPage('home')">← Back to Home</a>
+            
+            <div class="section-label">Performance Analytics</div>
+            <h2>Impact Dashboard</h2>
+            
+            <div class="dashboard-grid">
+                <div class="metric-card">
+                    <h4>Total Revenue Impact</h4>
+                    <div class="metric-value">$1.5B+</div>
+                    <div class="metric-description">Combined revenue across managed platforms</div>
+                </div>
+                <div class="metric-card">
+                    <h4>Average Revenue Growth</h4>
+                    <div class="metric-value">150%+</div>
+                    <div class="metric-description">Across all product initiatives</div>
+                </div>
+                <div class="metric-card">
+                    <h4>Global Scale</h4>
+                    <div class="metric-value">3 Continents</div>
+                    <div class="metric-description">North America, Europe, Asia-Pacific</div>
+                </div>
+                <div class="metric-card">
+                    <h4>Operations Impact</h4>
+                    <div class="metric-value">1,040 Hours</div>
+                    <div class="metric-description">Annual savings (Nike By You)</div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Revenue Growth Chart -->
+            <div class="chart-container">
+                <h4>Revenue Growth Trajectory (Nike Digital)</h4>
+                <div class="chart-canvas">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Performance Improvement -->
+            <div class="chart-container">
+                <h4>Nike By You: Rendering Performance Improvement</h4>
+                <div class="chart-canvas">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Global Adoption -->
+            <div class="chart-container">
+                <h4>Nike By You: Product Adoption Timeline</h4>
+                <div class="chart-canvas">
+                    <canvas id="adoptionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Platform Reach -->
+            <div class="chart-container">
+                <h4>Platform Reach & Scale (Finance Transformation)</h4>
+                <div class="chart-canvas">
+                    <canvas id="reachChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CASE STUDIES PAGE -->
+<div class="page" id="case-studies">
+    <section class="case-study-detail">
+        <div class="container">
+            <a class="back-button" onclick="showPage('home')">← Back to Home</a>
+            <div class="section-label">Featured Work</div>
+            <h2>Case Studies</h2>
+
+            <div class="case-study-grid">
+                <div class="case-study-card" onclick="showPage('cs1')">
+                    <div class="case-study-header">
+                        <h3>Nike.com PDP</h3>
+                        <span class="case-study-tag">E-Commerce</span>
+                    </div>
+                    <div class="case-study-body">
+                        <p>108% revenue growth through platform optimization</p>
+                    </div>
+                </div>
+
+                <div class="case-study-card" onclick="showPage('cs2')">
+                    <div class="case-study-header">
+                        <h3>Nike By You 3D</h3>
+                        <span class="case-study-tag">Technical</span>
+                    </div>
+                    <div class="case-study-body">
+                        <p>Scaled rendering from 400 to near-infinite RPS</p>
+                    </div>
+                </div>
+
+                <div class="case-study-card" onclick="showPage('cs3')">
+                    <div class="case-study-header">
+                        <h3>Finance Transformation</h3>
+                        <span class="case-study-tag">Enterprise</span>
+                    </div>
+                    <div class="case-study-body">
+                        <p>Unified planning across 3+ regions globally</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CASE STUDY 1: NIKE.COM PDP -->
+<div class="page" id="cs1">
+    <section class="case-study-detail">
+        <div class="case-study-hero">
+            <div class="case-study-hero-content">
+                <a class="back-button" style="color: white;" onclick="showPage('case-studies')">← Back to Case Studies</a>
+                <h1>Nike.com Product Detail Page</h1>
+                <p>Driving 108% revenue growth through platform optimization and global coordination</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- SITUATION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Situation</span></h3>
+                <div class="starl-content">
+                    <p><strong>Context:</strong> Nike.com's Product Detail Page (PDP) was the core e-commerce experience where customers made purchase decisions. The platform was running on legacy infrastructure that struggled during peak traffic events (holiday shopping, major product launches).</p>
+                    <p><strong>Business Need:</strong> Drive revenue growth in digital channels while ensuring platform stability and consistency across global markets (North America, Europe, Asia-Pacific).</p>
+                    <p><strong>Challenge:</strong> The platform needed to support increasing traffic volumes, regional customization requirements, and new features without sacrificing performance or user experience.</p>
+                </div>
+            </div>
+
+            <!-- TASK -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Task</span></h3>
+                <div class="starl-content">
+                    <p><strong>My Responsibility:</strong> As Senior PM for Nike.com PDP, I owned the product vision, roadmap, and execution for two major platform refactors that would modernize the infrastructure and optimize the user experience.</p>
+                    <p><strong>Key Goals:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Increase revenue through conversion rate optimization</li>
+                        <li>Improve platform stability and performance during peak traffic</li>
+                        <li>Support regional requirements (legal, currency, localization)</li>
+                        <li>Enable rapid feature iteration</li>
+                        <li>Maintain seamless user experience during migration</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACTION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Action</span></h3>
+                <div class="starl-content">
+                    <p><strong>Phase 1: Data-Driven Discovery</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Analyzed conversion data, bounce rates, and user flows to identify bottlenecks</li>
+                        <li>Identified that page load time correlated directly with conversion drop-off</li>
+                        <li>Mapped regional requirements (EU data privacy, China fulfillment, APAC pricing)</li>
+                    </ul>
+
+                    <p><strong>Phase 2: Strategic Planning</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Defined MVP for cloud migration (infrastructure modernization without UX overhaul)</li>
+                        <li>Created roadmap to prioritize: stability → performance → new features</li>
+                        <li>Negotiated with stakeholders to balance speed with regional compliance</li>
+                    </ul>
+
+                    <p><strong>Phase 3: Execution & Collaboration</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Led cross-functional team of backend engineers, frontend developers, and QA</li>
+                        <li>Consulted with geographic partners (EU legal, China ops, APAC marketing) to clarify requirements</li>
+                        <li>Managed dependencies and milestones to ensure phased rollout</li>
+                        <li>Established clear requirements and acceptance criteria for engineering teams</li>
+                    </ul>
+
+                    <p><strong>Phase 4: Optimization & Scaling</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>A/B tested design changes to maximize conversion</li>
+                        <li>Monitored performance metrics during rollout</li>
+                        <li>Deployed 'Nike By You' customizable footwear experience on new platform</li>
+                        <li>Collected data to drive next iteration of improvements</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Decision:</strong> We chose cloud migration over a complete redesign. This allowed us to modernize infrastructure without the risk of a UI overhaul. Once stable, we could iterate on design with confidence.
+            </div>
+
+            <!-- RESULT -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Result</span></h3>
+                <div class="starl-content">
+                    <p><strong>Revenue Impact:</strong> 108% revenue growth over 4 years for Nike Digital, driven significantly by platform improvements and feature enhancements.</p>
+                    <p><strong>Technical Outcomes:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Successfully migrated PDP to cloud platform</li>
+                        <li>Reduced page load time by 30%+</li>
+                        <li>Improved uptime during peak traffic events</li>
+                        <li>Enabled support for 40+ regional variants</li>
+                    </ul>
+                    <p><strong>Business Outcomes:</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Conversion rate improved by 15%</li>
+                        <li>Average order value increased through better product recommendations</li>
+                        <li>Foundation set for Nike By You 3D customization at scale</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEARNED -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Learned & Impact</span></h3>
+                <div class="starl-content">
+                    <p><strong>Key Insight:</strong> Platform stability isn't just a technical concern—it's a product strategy decision. By investing in infrastructure first, we created runway for innovation.</p>
+                    <p><strong>Why This Matters for Hiring Managers:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>I understand that technical constraints shape product roadmaps</li>
+                        <li>I can manage complex stakeholder needs across geographies</li>
+                        <li>I prioritize customer impact over feature velocity</li>
+                        <li>I communicate trade-offs clearly and transparently</li>
+                        <li>I translate business goals into technical requirements</li>
+                    </ul>
+                    <p><strong>Application to Your Role:</strong> At a company like HALO working with enterprise clients, managing regional requirements and balancing platform stability with customization is exactly the type of challenge I thrive in.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CASE STUDY 2: NIKE BY YOU 3D CUSTOMIZATION -->
+<div class="page" id="cs2">
+    <section class="case-study-detail">
+        <div class="case-study-hero">
+            <div class="case-study-hero-content">
+                <a class="back-button" style="color: white;" onclick="showPage('case-studies')">← Back to Case Studies</a>
+                <h1>Nike By You 3D Customization</h1>
+                <p>Solving technical bottlenecks at unprecedented scale through data-driven problem solving</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- SITUATION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Situation</span></h3>
+                <div class="starl-content">
+                    <p><strong>Context:</strong> Nike By You is a 3D customization experience where customers design their own footwear. The technology renders 2D design assets in real-time as users make customization choices.</p>
+                    <p><strong>Business Opportunity:</strong> 3D customization was a major differentiator. Nike wanted to roll out the feature globally to drive engagement and justify premium pricing.</p>
+                    <p><strong>Technical Challenge:</strong> The rendering infrastructure couldn't scale. During high-traffic events (holiday shopping, major product launches), the system hit a hard ceiling of 400 renders per second—far below what global adoption would require.</p>
+                    <p><strong>Deadline Pressure:</strong> Nike had committed to rolling out 3D customization to 40-50% of products within 12 months.</p>
+                </div>
+            </div>
+
+            <!-- TASK -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Task</span></h3>
+                <div class="starl-content">
+                    <p><strong>My Responsibility:</strong> Lead the back-end services team to identify and solve the rendering bottleneck, enabling global scale.</p>
+                    <p><strong>Constraints:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Timeline: 12 months to ship at scale</li>
+                        <li>Technical: Unknown architecture limitations</li>
+                        <li>Business: Couldn't delay product launch; brand impact was high</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACTION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Action</span></h3>
+                <div class="starl-content">
+                    <p><strong>Phase 1: Data-Driven Problem Identification</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Reviewed infrastructure metrics and identified rendering service as the bottleneck</li>
+                        <li>Analyzed traffic patterns during high-volume events</li>
+                        <li>Determined: 400 RPS limit would prevent global adoption</li>
+                        <li>Calculated required capacity: near-infinite RPS to handle peak traffic</li>
+                    </ul>
+
+                    <p><strong>Phase 2: Cross-Functional Collaboration</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Worked with backend architects to understand rendering pipeline</li>
+                        <li>Partnered with infrastructure/DevOps to evaluate scaling options</li>
+                        <li>Collaborated with product design to understand real-time rendering requirements</li>
+                    </ul>
+
+                    <p><strong>Phase 3: Solution Architecture</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Led requirements gathering to define what 'infinite scale' meant</li>
+                        <li>Prioritized: User experience (750ms render time target) over perfect visual fidelity</li>
+                        <li>Created roadmap to re-architect rendering services in phases</li>
+                    </ul>
+
+                    <p><strong>Phase 4: Execution & Optimization</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Optimized 2D asset rendering for 750ms load time (from 2+ seconds)</li>
+                        <li>Implemented caching and parallel processing to achieve near-infinite RPS</li>
+                        <li>Tested with realistic traffic patterns from previous peak events</li>
+                        <li>Rolled out gradually, monitoring for issues</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Decision:</strong> Rather than trying to perfect the visual rendering, we optimized for user experience. 750ms render time is "fast enough" for users, but breakthrough from a technical perspective.
+            </div>
+
+            <!-- RESULT -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Result</span></h3>
+                <div class="starl-content">
+                    <p><strong>Technical Achievement:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Scaled rendering infrastructure from 400 RPS to near-infinite RPS</li>
+                        <li>Reduced render time from 2+ seconds to 750ms</li>
+                        <li>"No one in the entire world is doing anything like this at this magnitude of scale"</li>
+                    </ul>
+
+                    <p><strong>Business Impact:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Successfully rolled out 3D customization to 40-50% of Nike.com and Nike App products</li>
+                        <li>Enabled seamless experience during holiday shopping and major launches</li>
+                        <li>Created competitive moat: unique capability that competitors can't easily replicate</li>
+                        <li>Generated significant premium revenue from customized products</li>
+                    </ul>
+
+                    <p><strong>Operations Impact:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Saved Nike's Operations team 1,040 hours annually through workflow optimization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEARNED -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Learned & Impact</span></h3>
+                <div class="starl-content">
+                    <p><strong>Key Insight:</strong> Technical problems are often product problems. By partnering closely with engineers and using data to define requirements, we solved an infrastructure challenge that enabled a business opportunity.</p>
+                    <p><strong>Why This Matters for Hiring Managers:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>I'm comfortable working on complex technical challenges</li>
+                        <li>I use data to identify and prioritize problems</li>
+                        <li>I understand how technical constraints drive product decisions</li>
+                        <li>I can translate between technical and business stakeholders</li>
+                        <li>I balance perfection with pragmatism</li>
+                    </ul>
+                    <p><strong>Application to Your Role:</strong> If you're working with enterprise clients who have complex technical requirements (API integrations, data migration, compliance), this experience shows I can navigate those conversations with confidence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CASE STUDY 3: FINANCE TRANSFORMATION -->
+<div class="page" id="cs3">
+    <section class="case-study-detail">
+        <div class="case-study-hero">
+            <div class="case-study-hero-content">
+                <a class="back-button" style="color: white;" onclick="showPage('case-studies')">← Back to Case Studies</a>
+                <h1>Finance Transformation (Anaplan Integration)</h1>
+                <p>Unifying global financial planning across 3+ regions with complex stakeholder management</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- SITUATION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Situation</span></h3>
+                <div class="starl-content">
+                    <p><strong>Context:</strong> Nike's Finance organization was using fragmented planning tools across regions (North America, Greater China, Europe). This led to forecasting inconsistencies, slow planning cycles, and inability to do real-time financial decision-making.</p>
+                    <p><strong>Strategic Goal:</strong> Unify financial planning on a single platform (Anaplan) to improve forecasting accuracy, accelerate planning cycles, and enable better business decisions.</p>
+                    <p><strong>Complexity:</strong> Each region had different requirements, constraints, and stakeholders:</p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>North America: Fastest cycle, most complex products</li>
+                        <li>Greater China: Strict data residency and regulatory requirements</li>
+                        <li>Europe: GDPR compliance, multi-currency complexity</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TASK -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Task</span></h3>
+                <div class="starl-content">
+                    <p><strong>My Responsibility (as Senior Principal Consultant/TPM):</strong> Lead technical product management for the finance transformation initiative. Translate business requirements into product capabilities while managing cross-regional dependencies and ensuring delivery.</p>
+                    <p><strong>Key Challenges:</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Multiple stakeholders with competing priorities</li>
+                        <li>Technical complexity (Anaplan configuration, data architecture)</li>
+                        <li>Regulatory constraints (China data residency, GDPR)</li>
+                        <li>Time zones (synchronous communication across 3 continents)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ACTION -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Action</span></h3>
+                <div class="starl-content">
+                    <p><strong>Phase 1: Customer-Centric Discovery</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Conducted deep discovery with Finance teams in each region</li>
+                        <li>Mapped planning workflows and identified pain points</li>
+                        <li>Understood regional constraints (regulatory, operational, technical)</li>
+                        <li>Built detailed requirements for Anaplan configuration</li>
+                    </ul>
+
+                    <p><strong>Phase 2: Roadmap Prioritization</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Identified common platform capabilities (foundation)</li>
+                        <li>Planned regional customizations (phase 2 rollouts)</li>
+                        <li>Prioritized by business value and dependency</li>
+                        <li>Balanced speed with regional complexity</li>
+                    </ul>
+
+                    <p><strong>Phase 3: Cross-Regional Collaboration</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Facilitated weekly syncs with Finance, Engineering, Data, and regional teams</li>
+                        <li>Managed time zone challenges (overlapping meetings, async documentation)</li>
+                        <li>Negotiated trade-offs when regions had conflicting needs</li>
+                        <li>Ensured alignment on scope, timelines, and success metrics</li>
+                    </ul>
+
+                    <p><strong>Phase 4: Regulatory & Compliance</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Navigated China data residency requirements (data can't leave China)</li>
+                        <li>Ensured GDPR compliance for European data handling</li>
+                        <li>Coordinated security compliance migrations</li>
+                        <li>Documented requirements for each region's legal constraints</li>
+                    </ul>
+
+                    <p><strong>Phase 5: Execution & Communication</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Analyzed detailed Anaplan design documents to extract requirements</li>
+                        <li>Created product roadmap documents for leadership review</li>
+                        <li>Provided weekly health status updates to stakeholders</li>
+                        <li>Tracked delivery against milestones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-insight">
+                <strong>Key Decision:</strong> Rather than force all regions into identical processes, we built a flexible platform where regions could customize within guardrails. This allowed faster time-to-value while maintaining data consistency.
+            </div>
+
+            <!-- RESULT -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Result</span></h3>
+                <div class="starl-content">
+                    <p><strong>Platform Delivery:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Successfully launched unified Anaplan platform across North America, Greater China, and Europe</li>
+                        <li>Navigated complex data migration for China (regulatory compliance)</li>
+                        <li>Implemented regional customizations without compromising data integrity</li>
+                    </ul>
+
+                    <p><strong>Business Impact:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Reduced planning cycle time by 30%+</li>
+                        <li>Improved forecast accuracy through consistent methodology</li>
+                        <li>Enabled real-time financial decision-making</li>
+                        <li>Created single source of truth for global planning</li>
+                    </ul>
+
+                    <p><strong>Operational Outcomes:</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Improved cross-regional collaboration and communication</li>
+                        <li>Established scalable platform for future growth</li>
+                        <li>Enhanced compliance and audit capabilities</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- LEARNED -->
+            <div class="starl-section">
+                <h3><span class="starl-label">Learned & Impact</span></h3>
+                <div class="starl-content">
+                    <p><strong>Key Insight:</strong> Enterprise product management is about managing complexity, not just building features. The real skill is aligning diverse stakeholders, managing constraints, and delivering value despite complexity.</p>
+                    <p><strong>Why This Matters for Hiring Managers:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>I understand enterprise complexity (multiple regions, regulatory constraints, competing priorities)</li>
+                        <li>I can manage stakeholder relationships without formal authority</li>
+                        <li>I communicate clearly to both technical and business audiences</li>
+                        <li>I prioritize customer value over internal politics</li>
+                        <li>I'm comfortable with ambiguity and constraints</li>
+                    </ul>
+                    <p><strong>Application to Your Role:</strong> HALO works with large enterprise clients like CVS and PepsiCo through RFPs. This experience demonstrates I can understand complex business requirements, navigate stakeholder dynamics, and deliver solutions that balance speed with quality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="contact">
+    <section class="contact">
+        <div class="container">
+            <div class="section-label" style="color: rgba(255,255,255,0.7);">Get In Touch</div>
+            <h2>Let's Connect</h2>
+            <p style="max-width: 600px; margin: 0 auto 2rem; font-size: 1.05rem; opacity: 0.95;">
+                I'm interested in Senior Product Manager roles at innovative companies building enterprise solutions at scale. Let's talk about your challenges and how I can help.
+            </p>
+            <div class="contact-links">
+                <a href="mailto:krayemr@gmail.com" class="contact-link">📧 Email: krayemr@gmail.com</a>
+                <a href="https://linkedin.com/in/ramikrayem" class="contact-link" target="_blank">💼 LinkedIn</a>
+                <a href="#" class="contact-link">📄 Download Resume</a>
+            </div>
+        </div>
+    </section>
+</div>
 
 <!-- FOOTER -->
 <footer>
-    <p>&copy; 2025 Rami Krayem. All rights reserved.</p>
+    <p>&copy; 2025 Rami Krayem. All rights reserved. | Certified Scrum Product Owner | Anaplan Level 1 | B.S. Communications, OSU</p>
 </footer>
+
+<script>
+    function showPage(pageId) {
+        // Hide all pages
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        
+        // Show selected page
+        document.getElementById(pageId).classList.add('active');
+        
+        // Initialize charts if we're on the dashboard
+        if (pageId === 'dashboard') {
+            setTimeout(() => {
+                initializeCharts();
+            }, 100);
+        }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    }
+
+    function initializeCharts() {
+        // Revenue Growth Chart
+        const revenueCtx = document.getElementById('revenueChart');
+        if (revenueCtx && !revenueCtx.revenueChart) {
+            revenueCtx.revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4'],
+                    datasets: [{
+                        label: 'Revenue Growth (%)',
+                        data: [25, 50, 78, 108],
+                        borderColor: '#17a085',
+                        backgroundColor: 'rgba(23, 160, 133, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 6,
+                        pointBackgroundColor: '#17a085',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { font: { size: 12 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Performance Improvement Chart
+        const perfCtx = document.getElementById('performanceChart');
+        if (perfCtx && !perfCtx.perfChart) {
+            perfCtx.perfChart = new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Starting Point', 'Phase 1', 'Phase 2', 'Final State'],
+                    datasets: [{
+                        label: 'Renders Per Second (RPS)',
+                        data: [400, 2000, 10000, 50000],
+                        backgroundColor: ['#ed8936', '#ed8936', '#17a085', '#17a085'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { font: { size: 12 } }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return (value / 1000).toFixed(0) + 'K RPS';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Product Adoption Chart
+        const adoptCtx = document.getElementById('adoptionChart');
+        if (adoptCtx && !adoptCtx.adoptChart) {
+            adoptCtx.adoptChart = new Chart(adoptCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2'],
+                    datasets: [{
+                        label: 'Nike By You 3D (% of Products Live)',
+                        data: [5, 12, 22, 28, 38, 45],
+                        borderColor: '#17a085',
+                        backgroundColor: 'rgba(23, 160, 133, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#17a085'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, labels: { font: { size: 12 } } }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: function(value) { return value + '%'; } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Global Reach Chart
+        const reachCtx = document.getElementById('reachChart');
+        if (reachCtx && !reachCtx.reachChart) {
+            reachCtx.reachChart = new Chart(reachCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['North America', 'Greater China', 'Europe', 'APAC'],
+                    datasets: [{
+                        data: [35, 28, 22, 15],
+                        backgroundColor: ['#17a085', '#48bb78', '#38b2ac', '#4fd1c5'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 12 }, padding: 15 }
+                        }
+                    }
+                }
+            });
+        }
+    }
+</script>
 
 </body>
 </html>
